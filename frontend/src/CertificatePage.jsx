@@ -28,6 +28,7 @@ const CertificatePage = () => {
   const [revoking, setRevoking] = useState(false);
 
   // Secure validation state
+  {/* Secure validation state */}
   const [content, setContent] = useState('');
   const [contentHash, setContentHash] = useState('');
   const [validating, setValidating] = useState(false);
@@ -812,51 +813,24 @@ const CertificatePage = () => {
             </h2>
             
             {!account ? (
-              <div>
-                <button 
-                  onClick={connectWallet}
-                  style={{
-                    width: '100%',
-                    backgroundColor: '#4f46e5',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px',
-                    fontSize: '16px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    marginBottom: '20px'
-                  }}
-                  onMouseOver={(e) => e.target.style.backgroundColor = '#4338ca'}
-                  onMouseOut={(e) => e.target.style.backgroundColor = '#4f46e5'}
-                >
-                  连接钱包
-                </button>
-                
-                {/* Force new test address button */}
-                <button
-                  onClick={() => {
-                    // Generate a random test address for simulation only
-                    const testAddress = '0x' + Array.from({length: 40}, () => 
-                      Math.floor(Math.random() * 16).toString(16)
-                    ).join('');
-                    setAccount(testAddress);
-                    setMintMessage('Test mode: Using simulated address ' + testAddress.substring(0, 10) + '...');
-                  }}
-                  style={{
-                    width: '100%',
-                    backgroundColor: '#f59e0b',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px',
-                    fontSize: '16px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  🔧 使用测试地址（仅模拟）
-                </button>
-              </div>
+              <button 
+                onClick={connectWallet}
+                style={{
+                  width: '100%',
+                  backgroundColor: '#4f46e5',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px',
+                  fontSize: '16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  marginBottom: '20px'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#4338ca'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#4f46e5'}
+              >
+                连接钱包
+              </button>
             ) : (
               <div style={{
                 marginBottom: '20px',
