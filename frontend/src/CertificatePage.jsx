@@ -36,6 +36,12 @@ const CertificatePage = () => {
   const [lockedStatus, setLockedStatus] = useState(null);
   const [verificationLogs, setVerificationLogs] = useState([]);
 
+  // Lineage tracing state
+  const [lineageTokenId, setLineageTokenId] = useState('');
+  const [certificateHistory, setCertificateHistory] = useState([]);
+  const [fetchingHistory, setFetchingHistory] = useState(false);
+  const [historyError, setHistoryError] = useState('');
+
   // Contract ABI and address from configuration
   const contractABI = contractConfig.abi;
   const contractAddress = contractConfig.address;
@@ -402,7 +408,7 @@ const CertificatePage = () => {
 
     try {
       // Create provider for Monad Testnet
-      const provider = new ethers.JsonRpcProvider('https://testnet-rpc.monad.xyz/', 10143);
+      const provider = new ethers.JsonRpcProvider('https://testnet-rpc.monad.xyz/');
       
       // Create secure validator contract instance
       const validatorContract = new ethers.Contract(
@@ -427,6 +433,58 @@ const CertificatePage = () => {
       }
     } catch (error) {
       console.error('Error checking lock status:', error);
+    }
+  };
+
+  // Fetch certificate lineage history
+  const fetchCertificateHistory = async () => {
+    if (!lineageTokenId) {
+      setHistoryError('请输入证书Token ID');
+      return;
+    }
+
+    setFetchingHistory(true);
+    setHistoryError('');
+    setCertificateHistory([]);
+
+    try {
+      // Create provider for Monad Testnet
+      const provider = new ethers.JsonRpcProvider('https://testnet-rpc.monad.xyz/');
+      
+      // Create learning credential contract instance
+      const credentialContract = new ethers.Contract(
+        contractConfig.address,
+        contractConfig.abi,
+        provider
+      );
+
+      // Get history count
+      const historyCount = await credentialContract.getHistoryCount(lineageTokenId);
+      console.log("History count:", historyCount.toString());
+      
+      if (historyCount > 0) {
+        // Fetch all history entries
+        const historyEntries = [];
+        for (let i = 0; i < historyCount; i++) {
+          const entry = await credentialContract.getHistoryEntry(lineageTokenId, i);
+          historyEntries.push({
+            eventType: entry.eventType,
+            operator: entry.operator,
+            details: entry.details,
+            timestamp: entry.timestamp.toString()
+          });
+        }
+        
+        console.log("History entries:", historyEntries);
+        setCertificateHistory(historyEntries);
+      } else {
+        setHistoryError('该证书没有历史记录');
+      }
+    } catch (error) {
+      console.error('Error fetching certificate history:', error);
+      setHistoryError('获取证书历史记录时出错: ' + error.message);
+    } finally {
+      setFetchingHistory(false);
     }
   };
 
@@ -1397,6 +1455,236 @@ const CertificatePage = () => {
                     fontStyle: 'italic'
                   }}>
                     暂无验证日志
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Certificate Lineage Tracing Section */}
+        <div style={{ 
+          marginTop: '30px',
+          border: '1px solid #ddd',
+          borderRadius: '6px',
+          padding: '25px'
+        }}>
+          <h2 style={{ 
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: '#333',
+            marginBottom: '20px',
+            paddingBottom: '10px',
+            borderBottom: '1px solid #eee'
+          }}>
+            🧬 证书血缘追溯
+          </h2>
+          
+          <div style={{ 
+            display: 'flex',
+            gap: '30px',
+            flexWrap: 'nowrap'
+          }}>
+            {/* History Query Form */}
+            <div style={{ 
+              flex: '1',
+              minWidth: '0',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              padding: '25px'
+            }}>
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ 
+                  display: 'block',
+                  marginBottom: '5px',
+                  fontWeight: '500',
+                  color: '#333'
+                }}>
+                  证书Token ID
+                </label>
+                <input
+                  type="text"
+                  value={lineageTokenId}
+                  onChange={(e) => setLineageTokenId(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px'
+                  }}
+                  placeholder="输入证书Token ID"
+                />
+              </div>
+              
+              <button 
+                onClick={fetchCertificateHistory} 
+                disabled={fetchingHistory}
+                style={{
+                  width: '100%',
+                  backgroundColor: fetchingHistory ? '#9ca3af' : '#8b5cf6',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px',
+                  fontSize: '16px',
+                  borderRadius: '4px',
+                  cursor: fetchingHistory ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {fetchingHistory ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid #ffffff',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite',
+                      marginRight: '8px'
+                    }}></div>
+                    查询中...
+                  </div>
+                ) : (
+                  '查询血缘历史'
+                )}
+              </button>
+
+              {historyError && (
+                <div style={{
+                  marginTop: '20px',
+                  padding: '15px',
+                  backgroundColor: '#fee2e2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '4px',
+                  color: '#b91c1c'
+                }}>
+                  <p style={{ margin: 0 }}>{historyError}</p>
+                </div>
+              )}
+            </div>
+            
+            {/* History Display */}
+            <div style={{ 
+              flex: '1',
+              minWidth: '0',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              padding: '25px'
+            }}>
+              <h3 style={{ 
+                fontSize: '18px',
+                fontWeight: 'bold',
+                color: '#333',
+                marginBottom: '20px',
+                textAlign: 'center'
+              }}>
+                📜 证书历史记录
+              </h3>
+              
+              <div style={{
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}>
+                {certificateHistory.length > 0 ? (
+                  <div style={{ 
+                    position: 'relative',
+                    paddingLeft: '30px'
+                  }}>
+                    {/* Timeline line */}
+                    <div style={{
+                      position: 'absolute',
+                      left: '15px',
+                      top: '0',
+                      bottom: '0',
+                      width: '2px',
+                      backgroundColor: '#e5e7eb'
+                    }}></div>
+                    
+                    {certificateHistory.map((entry, index) => (
+                      <div 
+                        key={index} 
+                        style={{ 
+                          position: 'relative',
+                          marginBottom: '20px',
+                          paddingBottom: '20px',
+                          borderBottom: index < certificateHistory.length - 1 ? '1px dashed #e5e7eb' : 'none'
+                        }}
+                      >
+                        {/* Timeline dot */}
+                        <div style={{
+                          position: 'absolute',
+                          left: '-38px',
+                          top: '5px',
+                          width: '12px',
+                          height: '12px',
+                          borderRadius: '50%',
+                          backgroundColor: entry.eventType === 'minted' ? '#10b981' : 
+                                         entry.eventType === 'revoked' ? '#ef4444' : '#f59e0b',
+                          border: '2px solid white',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                        }}></div>
+                        
+                        <div style={{ 
+                          backgroundColor: '#f9fafb',
+                          padding: '15px',
+                          borderRadius: '6px',
+                          borderLeft: `3px solid ${entry.eventType === 'minted' ? '#10b981' : 
+                                                  entry.eventType === 'revoked' ? '#ef4444' : '#f59e0b'}`
+                        }}>
+                          <div style={{ 
+                            marginBottom: '8px',
+                            fontSize: '14px'
+                          }}>
+                            <span style={{ fontWeight: '600' }}>事件类型:</span>
+                            <span style={{ 
+                              marginLeft: '10px',
+                              color: entry.eventType === 'minted' ? '#10b981' : 
+                                     entry.eventType === 'revoked' ? '#ef4444' : '#f59e0b',
+                              fontWeight: 'bold'
+                            }}>
+                              {entry.eventType === 'minted' ? '✅ 证书颁发' : 
+                               entry.eventType === 'revoked' ? '❌ 证书撤销' : '⚠️ 证书修改'}
+                            </span>
+                          </div>
+                          
+                          <div style={{ 
+                            marginBottom: '8px',
+                            fontSize: '14px'
+                          }}>
+                            <span style={{ fontWeight: '600' }}>操作者:</span>
+                            <span style={{ marginLeft: '10px', fontFamily: 'monospace' }}>
+                              {entry.operator ? entry.operator.substring(0, 6) + '...' + entry.operator.substring(entry.operator.length - 4) : 'N/A'}
+                            </span>
+                          </div>
+                          
+                          <div style={{ 
+                            marginBottom: '8px',
+                            fontSize: '14px'
+                          }}>
+                            <span style={{ fontWeight: '600' }}>详情:</span>
+                            <span style={{ marginLeft: '10px' }}>{entry.details || '无详细信息'}</span>
+                          </div>
+                          
+                          <div style={{ 
+                            fontSize: '14px'
+                          }}>
+                            <span style={{ fontWeight: '600' }}>时间:</span>
+                            <span style={{ marginLeft: '10px' }}>
+                              {entry.timestamp ? new Date(entry.timestamp * 1000).toLocaleString() : 'N/A'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ 
+                    textAlign: 'center', 
+                    color: '#666',
+                    fontStyle: 'italic'
+                  }}>
+                    请输入证书Token ID并查询历史记录
                   </p>
                 )}
               </div>

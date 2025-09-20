@@ -12,7 +12,7 @@ async function main() {
   
   try {
     // Create provider and signer for Monad Testnet
-    const provider = new ethers.JsonRpcProvider("https://testnet-rpc.monad.xyz/", 10143);
+    const provider = new ethers.JsonRpcProvider("https://testnet-rpc.monad.xyz/");
     
     // Use the wallet private key from environment variables
     let privateKey = process.env.MONAD_TESTNET_PRIVATE_KEY;
@@ -24,6 +24,7 @@ async function main() {
     if (privateKey.length !== 64) {
       throw new Error("Invalid private key length");
     }
+    
     const deployer = new ethers.Wallet(privateKey, provider);
     console.log("Deploying contract with account:", deployer.address);
     
