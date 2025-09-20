@@ -1,0 +1,35 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_20-eb336a5328f22f38df5e49a07fa9b7a6fe32131b",
+  "solcVersion": "0.8.20",
+  "solcLongVersion": "0.8.20+commit.a1b79de6",
+  "userSourceNameMap": {
+    "contracts/SecureContentValidator.sol": "project/contracts/SecureContentValidator.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/SecureContentValidator.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract SecureContentValidator {\n    // 地址锁定映射\n    mapping(address => uint256) public lockedUntil;\n    mapping(address => uint256) public failedAttempts;\n    \n    // 验证日志\n    struct VerificationLog {\n        address user;\n        uint256 tokenId;\n        bytes32 contentHash;\n        bool isValid;\n        uint256 timestamp;\n    }\n    \n    VerificationLog[] public verificationLogs;\n    \n    // 事件\n    event ContentVerified(address indexed user, uint256 indexed tokenId, bytes32 contentHash, bool isValid);\n    event AddressLocked(address indexed user);\n    \n    // 验证内容函数\n    function verifyContent(string memory content, bytes32 expectedHash, uint256 tokenId) public {\n        // 检查地址是否被锁定\n        require(block.timestamp > lockedUntil[msg.sender], \"Address is locked\");\n        \n        // 计算内容哈希\n        bytes32 actualHash = keccak256(abi.encodePacked(content));\n        \n        // 验证哈希\n        bool isValid = (actualHash == expectedHash);\n        \n        // 记录验证日志\n        verificationLogs.push(VerificationLog({\n            user: msg.sender,\n            tokenId: tokenId,\n            contentHash: actualHash,\n            isValid: isValid,\n            timestamp: block.timestamp\n        }));\n        \n        // 如果验证失败，增加失败次数\n        if (!isValid) {\n            failedAttempts[msg.sender] += 1;\n            \n            // 如果失败次数超过3次，锁定地址1小时\n            if (failedAttempts[msg.sender] >= 3) {\n                lockedUntil[msg.sender] = block.timestamp + 1 hours;\n                emit AddressLocked(msg.sender);\n            }\n        } else {\n            // 验证成功，重置失败次数\n            failedAttempts[msg.sender] = 0;\n        }\n        \n        emit ContentVerified(msg.sender, tokenId, actualHash, isValid);\n    }\n    \n    // 获取验证日志数量\n    function getVerificationLogsCount() public view returns (uint256) {\n        return verificationLogs.length;\n    }\n    \n    // 获取验证日志\n    function getVerificationLogs(uint256 startIndex, uint256 count) public view returns (VerificationLog[] memory) {\n        require(startIndex < verificationLogs.length, \"Start index out of bounds\");\n        \n        uint256 endIndex = startIndex + count;\n        if (endIndex > verificationLogs.length) {\n            endIndex = verificationLogs.length;\n        }\n        \n        VerificationLog[] memory result = new VerificationLog[](endIndex - startIndex);\n        for (uint256 i = startIndex; i < endIndex; i++) {\n            result[i - startIndex] = verificationLogs[i];\n        }\n        \n        return result;\n    }\n    \n    // 检查地址是否被锁定\n    function isAddressLocked(address user) public view returns (bool) {\n        return block.timestamp <= lockedUntil[user];\n    }\n    \n    // 获取地址的失败尝试次数\n    function getFailedAttempts(address user) public view returns (uint256) {\n        return failedAttempts[user];\n    }\n    \n    // 获取地址解锁时间\n    function getUnlockTime(address user) public view returns (uint256) {\n        return lockedUntil[user];\n    }\n}"
+      }
+    }
+  }
+}
