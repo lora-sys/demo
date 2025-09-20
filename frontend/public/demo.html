@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区块链证书系统 - 项目演示</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #fdf2f8 100%);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-desc {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        .demo-section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .demo-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 15px;
+            text-decoration: none;
+            margin: 20px 10px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .tech-item {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tech-logo {
+            width: 24px;
+            height: 24px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .demo-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>区块链证书系统</h1>
+        <p class="subtitle">基于 Monad 测试网的去中心化数字证书发行与验证平台</p>
+        <div class="tagline">确保学历和证书的真实性与不可篡改性</div>
+    </header>
+    
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">去中心化</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">🛡️</div>
+                <div class="stat-label">安全验证</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">⚡</div>
+                <div class="stat-label">即时验证</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">♾️</div>
+                <div class="stat-label">永久存储</div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3 class="feature-title">NFT证书发行</h3>
+                <p class="feature-desc">通过智能合约将数字证书铸造为NFT，确保证书的唯一性和不可复制性。每张证书都包含完整的元数据信息。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">区块链验证</h3>
+                <p class="feature-desc">通过交易哈希在区块链上验证证书真实性，提供公开透明的验证机制，任何人都可以独立验证证书有效性。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">安全内容验证</h3>
+                <p class="feature-desc">基于Keccak256哈希算法验证证书内容完整性，防止内容篡改。内置地址锁定机制防止暴力破解。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🧬</div>
+                <h3 class="feature-title">血缘追溯</h3>
+                <p class="feature-desc">完整记录证书的生命周期事件，包括颁发、撤销等操作，提供可审计的证书历史追踪功能。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">权限管理</h3>
+                <p class="feature-desc">精细化权限控制系统，区分合约所有者、管理员和普通用户，确保只有授权人员才能执行敏感操作。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">响应式设计</h3>
+                <p class="feature-desc">现代化的响应式用户界面，支持桌面端和移动端访问，提供一致的用户体验。</p>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">立即体验</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; color: var(--gray);">
+                探索区块链证书系统的强大功能
+            </p>
+            
+            <a href="https://blockchain-cert-demo.vercel.app" class="demo-button">
+                🌐 在线演示
+            </a>
+            
+            <a href="https://github.com/your-repo/blockchain-cert-demo" class="demo-button" style="background: linear-gradient(135deg, #333 0%, #666 100%);">
+                💻 GitHub 源码
+            </a>
+        </div>
+        
+        <div class="tech-stack">
+            <div class="tech-item">
+                <span class="tech-logo">⚛️</span>
+                <span>React</span>
+            </div>
+            <div class="tech-item">
+                <span class="tech-logo">⚡</span>
+                <span>Vite</span>
+            </div>
+            <div class="tech-item">
+                <span class="tech-logo">🔗</span>
+                <span>Ethers.js</span>
+            </div>
+            <div class="tech-item">
+                <span class="tech-logo">-solidity</span>
+                <span>Solidity</span>
+            </div>
+            <div class="tech-item">
+                <span class="tech-logo">🔷</span>
+                <span>Monad</span>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">核心优势</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; text-align: left; margin-top: 40px;">
+                <div>
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">🛡️ 不可篡改</h3>
+                    <p>基于区块链技术，证书一旦上链就无法篡改，确保信息的真实性和完整性。</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--success); margin-bottom: 15px;">⚡ 快速验证</h3>
+                    <p>通过交易哈希即时验证证书有效性，无需等待冗长的审批流程。</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--warning); margin-bottom: 15px;">🔒 安全保护</h3>
+                    <p>地址锁定机制防止恶意攻击，智能合约确保操作的安全性和可靠性。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>基于区块链技术的数字证书系统</p>
+        <p>确保学历和证书的真实性与不可篡改性</p>
+        <p style="margin-top: 20px; font-size: 0.9rem;">
+            © 2025 区块链证书系统团队. MIT License.
+        </p>
+    </footer>
+</body>
+</html>
