@@ -831,24 +831,98 @@ const CertificatePage = () => {
             </h2>
             
             {!account ? (
-              <button 
-                onClick={connectWallet}
-                style={{
-                  width: '100%',
-                  backgroundColor: '#4f46e5',
-                  color: 'white',
-                  border: 'none',
-                  padding: '12px',
-                  fontSize: '16px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  marginBottom: '20px'
-                }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#4338ca'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#4f46e5'}
-              >
-                连接钱包
-              </button>
+              <div>
+                <button 
+                  onClick={connectWallet}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#4f46e5',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px',
+                    fontSize: '16px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    marginBottom: '20px'
+                  }}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#4338ca'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#4f46e5'}
+                >
+                  连接钱包
+                </button>
+                
+                {/* Test Mode: Simulate different addresses */}
+                <div style={{
+                  marginTop: '20px',
+                  padding: '15px',
+                  backgroundColor: '#fffbeb',
+                  border: '1px solid #fef3c7',
+                  borderRadius: '6px'
+                }}>
+                  <h4 style={{ 
+                    margin: '0 0 10px 0', 
+                    color: '#92400e',
+                    fontSize: '16px'
+                  }}>
+                    🧪 测试模式
+                  </h4>
+                  <p style={{ 
+                    fontSize: '14px', 
+                    color: '#92400e',
+                    margin: '0 0 15px 0'
+                  }}>
+                    用于测试地址锁定功能
+                  </p>
+                  
+                  <button
+                    onClick={() => {
+                      // Generate a random test address
+                      const testAddress = '0x' + Array.from({length: 40}, () => 
+                        Math.floor(Math.random() * 16).toString(16)
+                      ).join('');
+                      setAccount(testAddress);
+                      setMintMessage('Test wallet connected: ' + testAddress.substring(0, 10) + '...');
+                      localStorage.setItem('connectedAccount', testAddress);
+                    }}
+                    style={{
+                      width: '100%',
+                      backgroundColor: '#f59e0b',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: '500'
+                    }}
+                  >
+                    使用测试地址连接
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      // Clear test address
+                      setAccount('');
+                      setMintMessage('');
+                      localStorage.removeItem('connectedAccount');
+                    }}
+                    style={{
+                      marginTop: '10px',
+                      width: '100%',
+                      backgroundColor: '#d1d5db',
+                      color: '#374151',
+                      border: 'none',
+                      padding: '10px',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: '500'
+                    }}
+                  >
+                    清除测试地址
+                  </button>
+                </div>
+              </div>
             ) : (
               <div style={{
                 marginBottom: '20px',
