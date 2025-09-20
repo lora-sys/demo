@@ -110,27 +110,27 @@ const CertificatePage = () => {
   };
 
   // Reconnect wallet on page load
-  useEffect(() => {
-    const checkWalletConnection = async () => {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-          if (accounts.length > 0) {
-            setAccount(accounts[0]);
-            setMintMessage('Wallet connected successfully!');
-            
-            // Load existing certificates for this user
-            loadUserCertificates(accounts[0]);
-          }
-        } catch (error) {
-          console.error('Error checking wallet connection:', error);
-        }
-      }
-    };
-    
-    // DISABLE AUTO-CONNECT FOR TESTING PURPOSES
-    // checkWalletConnection();
-  }, []);
+  // useEffect(() => {
+  //   const checkWalletConnection = async () => {
+  //     if (typeof window.ethereum !== 'undefined') {
+  //       try {
+  //         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+  //         if (accounts.length > 0) {
+  //           setAccount(accounts[0]);
+  //           setMintMessage('Wallet connected successfully!');
+  //           
+  //           // Load existing certificates for this user
+  //           loadUserCertificates(accounts[0]);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error checking wallet connection:', error);
+  //       }
+  //     }
+  //   };
+  //   
+  //   // DISABLE AUTO-CONNECT FOR TESTING PURPOSES
+  //   // checkWalletConnection();
+  // }, []);
 
   // Mint certificate NFT
   const mintCertificate = async () => {
