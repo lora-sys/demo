@@ -91,6 +91,23 @@ const CertificatePage = () => {
       setMintMessage('Please install MetaMask to use this feature.');
     }
   };
+  
+  // Disconnect wallet
+  const disconnectWallet = async () => {
+    try {
+      // Clear account state
+      setAccount('');
+      setMintMessage('Wallet disconnected');
+      
+      // Clear localStorage
+      localStorage.removeItem('connectedAccount');
+      
+      // Clear any wallet-specific data
+      console.log('Wallet disconnected successfully');
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error);
+    }
+  };
 
   // Load user certificates from blockchain
   const loadUserCertificates = async (userAddress) => {
@@ -843,10 +860,25 @@ const CertificatePage = () => {
                 <p style={{ 
                   fontSize: '14px',
                   color: '#166534',
-                  margin: 0
+                  margin: '0 0 10px 0'
                 }}>
                   已连接: {account.substring(0, 6)}...{account.substring(account.length - 4)}
                 </p>
+                <button
+                  onClick={disconnectWallet}
+                  style={{
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 12px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    fontSize: '12px'
+                  }}
+                >
+                  断开连接
+                </button>
               </div>
             )}
             
