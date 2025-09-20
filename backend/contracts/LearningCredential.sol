@@ -10,6 +10,9 @@ contract LearningCredential is ERC721, Ownable {
     mapping(uint256 => string) public credentialMetadata;
     mapping(uint256 => bool) public revokedCertificates;
     
+    // 管理员地址列表（可以撤销证书的地址）
+    mapping(address => bool) public administrators;
+    
     // 血缘追溯相关结构
     struct CertificateEvent {
         string eventType;      // 事件类型: "minted", "revoked", "modified"
@@ -24,7 +27,20 @@ contract LearningCredential is ERC721, Ownable {
     constructor(address initialOwner) 
         ERC721("LearningCredential", "LRN") 
         Ownable(initialOwner) 
-    {}
+    {
+        // 将合约所有者设为默认管理员
+        administrators[initialOwner] = true;
+    }
+
+    // 添加管理员
+    function addAdministrator(address admin) public onlyOwner {
+        administrators[admin] = true;
+    }
+    
+    // 移除管理员
+    function removeAdministrator(address admin) public onlyOwner {
+        administrators[admin] = false;
+    }
 
     // 添加历史记录的内部函数
     function _addHistory(uint256 tokenId, string memory eventType, string memory details) internal {
@@ -50,12 +66,14 @@ contract LearningCredential is ERC721, Ownable {
         return credentialMetadata[tokenId];
     }
     
-    function revokeCertificate(uint256 tokenId) public onlyOwner {
+    // 只有管理员可以撤销证书
+    function revokeCertificate(uint256 tokenId) public {
+        require(administrators[msg.sender], "Only administrators can revoke certificates");
         require(_ownerOf(tokenId) != address(0), "Certificate does not exist");
         revokedCertificates[tokenId] = true;
         
         // 添加撤销事件到历史记录
-        _addHistory(tokenId, "revoked", "Certificate revoked by owner");
+        _addHistory(tokenId, "revoked", "Certificate revoked by administrator");
     }
     
     function isRevoked(uint256 tokenId) public view returns (bool) {

@@ -488,6 +488,71 @@ const CertificatePage = () => {
     }
   };
 
+  // Add administrator (only owner can call this)
+  const addAdministrator = async (adminAddress) => {
+    if (!account) {
+      setHistoryError('请先连接钱包');
+      return;
+    }
+
+    try {
+      // Create provider and signer
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      
+      // Create learning credential contract instance
+      const credentialContract = new ethers.Contract(
+        contractConfig.address,
+        contractConfig.abi,
+        signer
+      );
+
+      // Call addAdministrator function
+      const tx = await credentialContract.addAdministrator(adminAddress);
+      await tx.wait();
+      
+      setHistoryError('管理员添加成功！');
+    } catch (error) {
+      console.error('Error adding administrator:', error);
+      setHistoryError('添加管理员时出错: ' + error.message);
+    }
+  };
+
+  // Revoke certificate (only administrators can call this)
+  const revokeCertificateByAdmin = async (tokenId) => {
+    if (!account) {
+      setHistoryError('请先连接钱包');
+      return;
+    }
+
+    try {
+      // Create provider and signer
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      
+      // Create learning credential contract instance
+      const credentialContract = new ethers.Contract(
+        contractConfig.address,
+        contractConfig.abi,
+        signer
+      );
+
+      // Call revokeCertificate function
+      const tx = await credentialContract.revokeCertificate(tokenId);
+      await tx.wait();
+      
+      setHistoryError('证书撤销成功！');
+      
+      // Refresh history to show the revoke event
+      setTimeout(() => {
+        fetchCertificateHistory();
+      }, 2000);
+    } catch (error) {
+      console.error('Error revoking certificate:', error);
+      setHistoryError('撤销证书时出错: ' + error.message);
+    }
+  };
+
   // Validate certificate content integrity
   const validateCertificateContent = async () => {
     if (!tokenId) {
@@ -1554,14 +1619,118 @@ const CertificatePage = () => {
                 <div style={{
                   marginTop: '20px',
                   padding: '15px',
-                  backgroundColor: '#fee2e2',
-                  border: '1px solid #fecaca',
+                  backgroundColor: historyError.includes('成功') ? '#dcfce7' : '#fee2e2',
+                  border: `1px solid ${historyError.includes('成功') ? '#bbf7d0' : '#fecaca'}`,
                   borderRadius: '4px',
-                  color: '#b91c1c'
+                  color: historyError.includes('成功') ? '#166534' : '#b91c1c'
                 }}>
                   <p style={{ margin: 0 }}>{historyError}</p>
                 </div>
               )}
+              
+              {/* Administrator functions */}
+              <div style={{ 
+                marginTop: '20px',
+                paddingTop: '20px',
+                borderTop: '1px solid #eee'
+              }}>
+                <h4 style={{ 
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  marginBottom: '15px'
+                }}>
+                  🔐 管理员功能
+                </h4>
+                
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ 
+                    display: 'block',
+                    marginBottom: '5px',
+                    fontWeight: '500',
+                    color: '#333'
+                  }}>
+                    添加管理员地址
+                  </label>
+                  <input
+                    type="text"
+                    id="adminAddress"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="输入管理员钱包地址"
+                  />
+                  <button
+                    onClick={() => {
+                      const adminAddress = document.getElementById('adminAddress').value;
+                      if (adminAddress) {
+                        addAdministrator(adminAddress);
+                      }
+                    }}
+                    style={{
+                      marginTop: '10px',
+                      width: '100%',
+                      backgroundColor: '#f59e0b',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: '500'
+                    }}
+                  >
+                    添加管理员
+                  </button>
+                </div>
+                
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ 
+                    display: 'block',
+                    marginBottom: '5px',
+                    fontWeight: '500',
+                    color: '#333'
+                  }}>
+                    撤销证书 (Token ID)
+                  </label>
+                  <input
+                    type="text"
+                    id="revokeTokenId"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="输入要撤销的证书Token ID"
+                  />
+                  <button
+                    onClick={() => {
+                      const tokenId = document.getElementById('revokeTokenId').value;
+                      if (tokenId) {
+                        revokeCertificateByAdmin(tokenId);
+                      }
+                    }}
+                    style={{
+                      marginTop: '10px',
+                      width: '100%',
+                      backgroundColor: '#ef4444',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: '500'
+                    }}
+                  >
+                    撤销证书
+                  </button>
+                </div>
+              </div>
             </div>
             
             {/* History Display */}
