@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import contractConfig from './contracts/LearningCredential.json';
 import secureValidatorConfig from './contracts/SecureContentValidator.json';
 
 const CertificatePage = () => {
   // Minting state
-  const [formData, setFormData] = useState({
-    studentName: '',
-    courseName: '',
-    issuer: '',
-    date: ''
+  const [formData, setFormData] = useState(() => {
+    // Load from localStorage if available
+    const savedData = localStorage.getItem('certificateFormData');
+    return savedData ? JSON.parse(savedData) : {
+      studentName: '',
+      courseName: '',
+      issuer: '',
+      date: ''
+    };
   });
   
-  const [account, setAccount] = useState('');
+  const [account, setAccount] = useState(() => {
+    // Load from localStorage if available
+    return localStorage.getItem('connectedAccount') || '';
+  });
+  
   const [minting, setMinting] = useState(false);
   const [mintMessage, setMintMessage] = useState('');
   const [transactionHash, setTransactionHash] = useState('');
@@ -41,6 +49,18 @@ const CertificatePage = () => {
   const [certificateHistory, setCertificateHistory] = useState([]);
   const [fetchingHistory, setFetchingHistory] = useState(false);
   const [historyError, setHistoryError] = useState('');
+  
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('certificateFormData', JSON.stringify(formData));
+  }, [formData]);
+  
+  // Save account to localStorage whenever it changes
+  useEffect(() => {
+    if (account) {
+      localStorage.setItem('connectedAccount', account);
+    }
+  }, [account]);
 
   // Contract ABI and address from configuration
   const contractABI = contractConfig.abi;
@@ -61,6 +81,9 @@ const CertificatePage = () => {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
         setMintMessage('Wallet connected successfully!');
+        
+        // Load existing certificates for this user
+        loadUserCertificates(accounts[0]);
       } catch (error) {
         setMintMessage('Failed to connect wallet: ' + error.message);
       }
@@ -68,6 +91,48 @@ const CertificatePage = () => {
       setMintMessage('Please install MetaMask to use this feature.');
     }
   };
+
+  // Load user certificates from blockchain
+  const loadUserCertificates = async (userAddress) => {
+    try {
+      // Create provider
+      const provider = new ethers.JsonRpcProvider('https://testnet-rpc.monad.xyz/');
+      
+      // Create contract instance
+      const contract = new ethers.Contract(contractAddress, contractABI, provider);
+      
+      // Get certificate count for this user (this would require a new function in the contract)
+      // For now, we can search for certificates by checking token ownership
+      console.log("Loading certificates for user:", userAddress);
+      
+      // This is a simplified approach - in a real app, you'd want a more efficient method
+      // to track which certificates belong to a user
+    } catch (error) {
+      console.error('Error loading user certificates:', error);
+    }
+  };
+
+  // Reconnect wallet on page load
+  useEffect(() => {
+    const checkWalletConnection = async () => {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            setMintMessage('Wallet connected successfully!');
+            
+            // Load existing certificates for this user
+            loadUserCertificates(accounts[0]);
+          }
+        } catch (error) {
+          console.error('Error checking wallet connection:', error);
+        }
+      }
+    };
+    
+    checkWalletConnection();
+  }, []);
 
   // Mint certificate NFT
   const mintCertificate = async () => {
