@@ -1,10 +1,10 @@
-# 区块链证书系统前端
+# 区块链证书系统
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-4-green.svg)](https://vitejs.dev/)
 
-基于区块链技术的数字证书发行与验证系统前端界面。
+基于区块链技术的数字证书发行与验证系统，确保学历和证书的真实性与不可篡改性。
 
 ## 🌟 项目特色
 
@@ -53,16 +53,30 @@ npm run preview
 ## 📁 项目结构
 
 ```
-frontend/
-├── src/
-│   ├── components/
-│   │   ├── CertificatePage.jsx     # 主要页面组件
-│   │   └── contracts/               # 合约ABI和地址配置
-│   ├── assets/                      # 静态资源
-│   └── App.jsx                     # 应用入口
-├── public/                         # 公共静态文件
-├── package.json                   # 项目依赖和脚本
-└── vite.config.js                 # Vite配置文件
+blockchain-cert-demo/
+├── backend/
+│   ├── contracts/
+│   │   ├── LearningCredential.sol          # 主要证书合约
+│   │   └── SecureContentValidator.sol     # 安全验证合约
+│   ├── scripts/
+│   │   ├── deployToMonadTestnet.js        # 部署脚本
+│   │   └── deploySecureValidator.js       # 安全验证器部署
+│   ├── hardhat.config.js                  # Hardhat配置
+│   └── package.json                       # 后端依赖
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── CertificatePage.jsx         # 主要页面组件
+│   │   ├── contracts/
+│   │   │   ├── LearningCredential.json     # 合约ABI和地址
+│   │   │   └── SecureContentValidator.json # 安全验证器ABI
+│   │   ├── App.jsx                         # 应用入口
+│   │   └── main.jsx                        # 主文件
+│   ├── public/
+│   │   └── demo.html                       # 演示页面
+│   ├── package.json                        # 前端依赖
+│   └── vite.config.js                      # Vite配置
+└── README.md                              # 项目说明
 ```
 
 ## 🎯 核心功能
@@ -92,7 +106,8 @@ frontend/
 - **框架**: React 18 + Vite
 - **状态管理**: React Hooks
 - **区块链交互**: Ethers.js
-- **样式**: CSS-in-JS
+- **智能合约**: Solidity 0.8.20
+- **开发框架**: Hardhat
 - **构建工具**: Vite
 - **部署**: Vercel
 
@@ -151,6 +166,7 @@ VITE_CONTRACT_ADDRESS=0x6c2acEdEF5BE55f89CfBeFA6d438A6750e17B108
 VITE_SECURE_VALIDATOR_ADDRESS=0x51Ff6c11163e7da9Bc939808bd27a136b518F2Fc
 VITE_RPC_URL=https://testnet-rpc.monad.xyz/
 VITE_CHAIN_ID=10143
+VITE_EXPLORER_URL=https://testnet.monadexplorer.com/
 ```
 
 ## 🛠️ 开发指南
