@@ -3,212 +3,6 @@ import { ethers } from 'ethers';
 import contractConfig from './contracts/LearningCredential.json';
 import secureValidatorConfig from './contracts/SecureContentValidator.json';
 
-// Modern CSS-in-JS styles
-const styles = {
-  // Global styles
-  global: {
-    backgroundColor: '#f8fafc',
-    minHeight: '100vh',
-    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    padding: '20px'
-  },
-  
-  // Container
-  container: {
-    maxWidth: '1400px',
-    margin: '0 auto'
-  },
-  
-  // Header
-  header: {
-    textAlign: 'center',
-    marginBottom: '40px',
-    padding: '30px 0'
-  },
-  
-  title: {
-    fontSize: '36px',
-    fontWeight: '800',
-    background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    marginBottom: '10px'
-  },
-  
-  subtitle: {
-    fontSize: '18px',
-    color: '#64748b',
-    fontWeight: '400'
-  },
-  
-  // Card styles
-  card: {
-    backgroundColor: 'white',
-    borderRadius: '16px',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-    padding: '30px',
-    transition: 'all 0.3s ease',
-    border: '1px solid #e2e8f0',
-    marginBottom: '30px'
-  },
-  
-  cardHover: {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.12)'
-  },
-  
-  cardHeader: {
-    borderBottom: '2px solid #f1f5f9',
-    paddingBottom: '20px',
-    marginBottom: '25px'
-  },
-  
-  cardTitle: {
-    fontSize: '22px',
-    fontWeight: '700',
-    color: '#1e293b',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px'
-  },
-  
-  // Form elements
-  formGroup: {
-    marginBottom: '24px'
-  },
-  
-  label: {
-    display: 'block',
-    marginBottom: '8px',
-    fontWeight: '600',
-    color: '#334155',
-    fontSize: '14px'
-  },
-  
-  input: {
-    width: '100%',
-    padding: '14px',
-    border: '2px solid #e2e8f0',
-    borderRadius: '12px',
-    fontSize: '15px',
-    transition: 'border-color 0.2s ease',
-    backgroundColor: '#f8fafc'
-  },
-  
-  inputFocus: {
-    borderColor: '#3b82f6',
-    backgroundColor: 'white',
-    outline: 'none'
-  },
-  
-  textarea: {
-    width: '100%',
-    padding: '14px',
-    border: '2px solid #e2e8f0',
-    borderRadius: '12px',
-    fontSize: '15px',
-    minHeight: '120px',
-    transition: 'border-color 0.2s ease',
-    backgroundColor: '#f8fafc',
-    fontFamily: 'inherit'
-  },
-  
-  // Buttons
-  button: {
-    width: '100%',
-    padding: '16px',
-    borderRadius: '12px',
-    border: 'none',
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '10px'
-  },
-  
-  primaryButton: {
-    backgroundColor: '#3b82f6',
-    color: 'white'
-  },
-  
-  primaryButtonHover: {
-    backgroundColor: '#2563eb',
-    transform: 'translateY(-1px)'
-  },
-  
-  secondaryButton: {
-    backgroundColor: '#f1f5f9',
-    color: '#334155'
-  },
-  
-  secondaryButtonHover: {
-    backgroundColor: '#e2e8f0',
-    transform: 'translateY(-1px)'
-  },
-  
-  dangerButton: {
-    backgroundColor: '#ef4444',
-    color: 'white'
-  },
-  
-  dangerButtonHover: {
-    backgroundColor: '#dc2626',
-    transform: 'translateY(-1px)'
-  },
-  
-  successButton: {
-    backgroundColor: '#10b981',
-    color: 'white'
-  },
-  
-  successButtonHover: {
-    backgroundColor: '#059669',
-    transform: 'translateY(-1px)'
-  },
-  
-  disabledButton: {
-    backgroundColor: '#94a3b8',
-    color: 'white',
-    cursor: 'not-allowed',
-    transform: 'none'
-  },
-  
-  // Status messages
-  statusMessage: {
-    padding: '20px',
-    borderRadius: '12px',
-    marginBottom: '25px',
-    border: '1px solid transparent'
-  },
-  
-  successMessage: {
-    backgroundColor: '#dcfce7',
-    borderColor: '#bbf7d0',
-    color: '#166534'
-  },
-  
-  errorMessage: {
-    backgroundColor: '#fee2e2',
-    borderColor: '#fecaca',
-    color: '#b91c1c'
-  },
-  
-  warningMessage: {
-    backgroundColor: '#fef3c7',
-    borderColor: '#fde68a',
-    color: '#92400e'
-  },
-  
-  infoMessage: {
-    backgroundColor: '#dbeafe',
-    borderColor: '#bfdbfe',
-    color: '#1e40af'
-  }
-};
-
 const CertificatePage = () => {
   // Minting state
   const [formData, setFormData] = useState({
@@ -963,122 +757,120 @@ const CertificatePage = () => {
   };
 
   return (
-    <div style={styles.global}>
-      <div style={styles.container}>
-        {/* Header */}
-        <div style={styles.header}>
-          <h1 style={styles.title}>区块链证书系统</h1>
-          <p style={styles.subtitle}>基于Monad测试网的NFT证书发行与验证</p>
-        </div>
-        
-        {/* Wallet Connection Card */}
-        <div 
-          style={styles.card}
-          onMouseEnter={(e) => e.target.style.boxShadow = styles.cardHover.boxShadow}
-          onMouseLeave={(e) => e.target.style.boxShadow = styles.card.boxShadow}
-        >
-          <div style={styles.cardHeader}>
-            <h2 style={styles.cardTitle}>
-              🔐 钱包连接
-            </h2>
-          </div>
-          
-          {!account ? (
-            <button 
-              onClick={connectWallet}
-              style={{...styles.button, ...styles.primaryButton}}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = styles.primaryButtonHover.backgroundColor;
-                e.target.style.transform = styles.primaryButtonHover.transform;
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = styles.primaryButton.backgroundColor;
-                e.target.style.transform = 'none';
-              }}
-            >
-              连接钱包
-            </button>
-          ) : (
-            <div style={{
-              padding: '20px',
-              backgroundColor: '#dcfce7',
-              borderRadius: '12px',
-              border: '1px solid #bbf7d0'
-            }}>
-              <p style={{ 
-                fontSize: '14px',
-                color: '#166534',
-                margin: '0 0 15px 0'
-              }}>
-                已连接: {account.substring(0, 6)}...{account.substring(account.length - 4)}
-              </p>
-              <button
-                onClick={disconnectWallet}
-                style={{...styles.button, ...styles.dangerButton, width: 'auto'}}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = styles.dangerButtonHover.backgroundColor;
-                  e.target.style.transform = styles.dangerButtonHover.transform;
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = styles.dangerButton.backgroundColor;
-                  e.target.style.transform = 'none';
-                }}
-              >
-                断开连接
-              </button>
-            </div>
-          )}
-          
-          {mintMessage && (
-            <div style={{
-              ...styles.statusMessage,
-              ...(mintMessage.includes('Error') || mintMessage.includes('Failed') 
-                ? styles.errorMessage 
-                : mintMessage.includes('Success') || mintMessage.includes('成功')
-                  ? styles.successMessage
-                  : styles.infoMessage)
-            }}>
-              <p style={{ 
-                margin: '0 0 15px 0', 
-                fontWeight: '600',
-                fontSize: '18px'
-              }}>{mintMessage}</p>
-              {transactionHash && (
-                <p style={{ margin: '10px 0', fontSize: '16px' }}>
-                  交易哈希: <span style={{ fontFamily: 'monospace', fontSize: '14px' }}>{transactionHash}</span>
-                </p>
-              )}
-              {tokenId && tokenId !== 'Unknown' && (
-                <p style={{ margin: '15px 0 0 0', fontSize: '16px' }}>
-                  Token ID: <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{tokenId}</span>
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-        
-        {/* Main Content Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-          gap: '30px',
-          marginBottom: '30px'
+    <div style={{ 
+      backgroundColor: '#f5f5f5', 
+      minHeight: '100vh', 
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ 
+        maxWidth: '1400px', 
+        margin: '0 auto',
+        backgroundColor: 'white',
+        padding: '30px',
+        borderRadius: '8px',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+      }}>
+        <h1 style={{ 
+          textAlign: 'center', 
+          color: '#333',
+          marginBottom: '10px',
+          fontSize: '32px'
         }}>
-          
+          区块链证书系统
+        </h1>
+        <p style={{ 
+          textAlign: 'center', 
+          color: '#666',
+          marginBottom: '30px',
+          fontSize: '16px'
+        }}>
+          基于Monad测试网的NFT证书发行与验证
+        </p>
+        
+        <div style={{ 
+          display: 'flex',
+          gap: '30px',
+          flexWrap: 'nowrap'
+        }}>
           {/* Minting Section */}
-          <div 
-            style={styles.card}
-            onMouseEnter={(e) => e.target.style.boxShadow = styles.cardHover.boxShadow}
-            onMouseLeave={(e) => e.target.style.boxShadow = styles.card.boxShadow}
-          >
-            <div style={styles.cardHeader}>
-              <h2 style={styles.cardTitle}>
-                🎓 证书发行
-              </h2>
-            </div>
+          <div style={{ 
+            flex: '1',
+            minWidth: '0', // 防止内容溢出
+            border: '1px solid #ddd',
+            borderRadius: '6px',
+            padding: '25px'
+          }}>
+            <h2 style={{ 
+              fontSize: '20px',
+              fontWeight: 'bold',
+              color: '#333',
+              marginBottom: '20px',
+              paddingBottom: '10px',
+              borderBottom: '1px solid #eee'
+            }}>
+              🎓 证书发行
+            </h2>
             
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
+            {!account ? (
+              <button 
+                onClick={connectWallet}
+                style={{
+                  width: '100%',
+                  backgroundColor: '#4f46e5',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px',
+                  fontSize: '16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  marginBottom: '20px'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#4338ca'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#4f46e5'}
+              >
+                连接钱包
+              </button>
+            ) : (
+              <div style={{
+                marginBottom: '20px',
+                padding: '10px',
+                backgroundColor: '#dcfce7',
+                border: '1px solid #bbf7d0',
+                borderRadius: '4px'
+              }}>
+                <p style={{ 
+                  fontSize: '14px',
+                  color: '#166534',
+                  margin: '0 0 10px 0'
+                }}>
+                  已连接: {account.substring(0, 6)}...{account.substring(account.length - 4)}
+                </p>
+                <button
+                  onClick={disconnectWallet}
+                  style={{
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 12px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    fontSize: '12px'
+                  }}
+                >
+                  断开连接
+                </button>
+              </div>
+            )}
+            
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ 
+                display: 'block',
+                marginBottom: '5px',
+                fontWeight: '500',
+                color: '#333'
+              }}>
                 学员姓名
               </label>
               <input
@@ -1086,13 +878,24 @@ const CertificatePage = () => {
                 name="studentName"
                 value={formData.studentName}
                 onChange={handleMintInputChange}
-                style={styles.input}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '14px'
+                }}
                 placeholder="输入学员姓名"
               />
             </div>
             
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ 
+                display: 'block',
+                marginBottom: '5px',
+                fontWeight: '500',
+                color: '#333'
+              }}>
                 课程名称
               </label>
               <input
@@ -1100,13 +903,24 @@ const CertificatePage = () => {
                 name="courseName"
                 value={formData.courseName}
                 onChange={handleMintInputChange}
-                style={styles.input}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '14px'
+                }}
                 placeholder="输入课程名称"
               />
             </div>
             
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ 
+                display: 'block',
+                marginBottom: '5px',
+                fontWeight: '500',
+                color: '#333'
+              }}>
                 颁发机构
               </label>
               <input
@@ -1114,13 +928,24 @@ const CertificatePage = () => {
                 name="issuer"
                 value={formData.issuer}
                 onChange={handleMintInputChange}
-                style={styles.input}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '14px'
+                }}
                 placeholder="输入颁发机构"
               />
             </div>
             
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ 
+                display: 'block',
+                marginBottom: '5px',
+                fontWeight: '500',
+                color: '#333'
+              }}>
                 日期
               </label>
               <input
@@ -1128,7 +953,13 @@ const CertificatePage = () => {
                 name="date"
                 value={formData.date}
                 onChange={handleMintInputChange}
-                style={styles.input}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '14px'
+                }}
               />
             </div>
             
@@ -1136,20 +967,21 @@ const CertificatePage = () => {
               onClick={mintCertificate} 
               disabled={minting}
               style={{
-                ...styles.button, 
-                ...(minting ? styles.disabledButton : styles.successButton)
+                width: '100%',
+                backgroundColor: minting ? '#9ca3af' : '#16a34a',
+                color: 'white',
+                border: 'none',
+                padding: '12px',
+                fontSize: '16px',
+                borderRadius: '4px',
+                cursor: minting ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold'
               }}
-              onMouseEnter={(e) => {
-                if (!minting) {
-                  e.target.style.backgroundColor = styles.successButtonHover.backgroundColor;
-                  e.target.style.transform = styles.successButtonHover.transform;
-                }
+              onMouseOver={(e) => {
+                if (!minting) e.target.style.backgroundColor = '#15803d';
               }}
-              onMouseLeave={(e) => {
-                if (!minting) {
-                  e.target.style.backgroundColor = styles.successButton.backgroundColor;
-                  e.target.style.transform = 'none';
-                }
+              onMouseOut={(e) => {
+                if (!minting) e.target.style.backgroundColor = '#16a34a';
               }}
             >
               {minting ? (
