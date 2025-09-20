@@ -265,7 +265,13 @@ const CertificatePage = () => {
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        // Request accounts to trigger MetaMask popup with account selection
+        const accounts = await window.ethereum.request({ 
+          method: 'eth_requestAccounts',
+          params: [{
+            eth_accounts: {}
+          }]
+        });
         setAccount(accounts[0]);
         setMintMessage('Wallet connected successfully!');
         
@@ -317,27 +323,27 @@ const CertificatePage = () => {
   };
 
   // Reconnect wallet on page load
-  // useEffect(() => {
-  //   const checkWalletConnection = async () => {
-  //     if (typeof window.ethereum !== 'undefined') {
-  //       try {
-  //         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-  //         if (accounts.length > 0) {
-  //           setAccount(accounts[0]);
-  //           setMintMessage('Wallet connected successfully!');
-  //           
-  //           // Load existing certificates for this user
-  //           loadUserCertificates(accounts[0]);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error checking wallet connection:', error);
-  //       }
-  //     }
-  //   };
-  //   
-  //   // DISABLE AUTO-CONNECT FOR TESTING PURPOSES
-  //   // checkWalletConnection();
-  // }, []);
+  useEffect(() => {
+    const checkWalletConnection = async () => {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          // Request accounts to trigger MetaMask popup
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            setMintMessage('Wallet connected successfully!');
+            
+            // Load existing certificates for this user
+            loadUserCertificates(accounts[0]);
+          }
+        } catch (error) {
+          console.error('Error checking wallet connection:', error);
+        }
+      }
+    };
+    
+    checkWalletConnection();
+  }, []);
 
   // Mint certificate NFT
   const mintCertificate = async () => {
